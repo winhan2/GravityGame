@@ -6,7 +6,7 @@ import os
 
 class Logger:
     def __init__(self, mode=2):
-        self.config = config.Config('../conf/logger.ini')
+        self.config = config.Config('../conf/logger.cfg')
         self.rpath = self.config.read('path', 'root_path')
         self.mode = mode
 
