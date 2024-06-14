@@ -13,3 +13,14 @@ class Index:
 
         pygame.display.flip()
 
+    @staticmethod
+    def mainloop():
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    return
+
+if __name__ == '__main__':
+    Index().mainloop()
+
