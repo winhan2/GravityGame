@@ -31,7 +31,7 @@ class Index:
     def __start_button(self):
         # 画长方形
         start_button = pygame.Rect(320, 300, 180, 70)
-        pygame.draw.rect(self.screen, (240, 80, 20), start_button)
+        pygame.draw.rect(self.screen, (30, 30, 30), start_button)
 
         # 写字
         start_text = pygame.font.SysFont("SimSun", 30)
@@ -39,9 +39,10 @@ class Index:
         start_text_surface = start_text.render('开始游戏', True, (255, 255, 255))
         self.screen.blit(start_text_surface, (350, 320))
 
+    # 设置图标
     def __settings_image(self):
         sgsi = pygame.image.load('../lib/image/settings.png')
-        self.screen.blit(sgsi, (10, 10))
+        self.screen.blit(sgsi, (0, 0))
 
     @staticmethod
     def mainloop():
