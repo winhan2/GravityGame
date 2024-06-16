@@ -25,6 +25,7 @@ class Index:
         head_text_surface = head_text.render('GravityGame', True, (240, 80, 20))
         self.screen.blit(head_text_surface, (200, 100))
         self.__start_button()
+        self.__settings_image()
 
     # 开始按钮
     def __start_button(self):
@@ -37,6 +38,10 @@ class Index:
         # start_text = pygame.font.Font("SimSun", 50)
         start_text_surface = start_text.render('开始游戏', True, (255, 255, 255))
         self.screen.blit(start_text_surface, (350, 320))
+
+    def __settings_image(self):
+        sgsi = pygame.image.load('../lib/image/settings.png')
+        self.screen.blit(sgsi, (10, 10))
 
     @staticmethod
     def mainloop():
