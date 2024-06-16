@@ -13,19 +13,35 @@ class Index:
         self.__bg()
         self.__draw()
 
-        pygame.display.flip()
-
+    # 背景
     def __bg(self):
         bgi = pygame.image.load('../lib/image/bg.jpg')
         self.screen.blit(bgi, (0, 0))
 
+    # 绘制
     def __draw(self):
-        pass
+        # 标题
+        head_text = pygame.font.Font(None, 100)
+        head_text_surface = head_text.render('GravityGame', True, (240, 80, 20))
+        self.screen.blit(head_text_surface, (200, 100))
+        self.__start_button()
+
+    # 开始按钮
+    def __start_button(self):
+        # 画长方形
+        start_button = pygame.Rect(320, 300, 180, 70)
+        pygame.draw.rect(self.screen, (240, 80, 20), start_button)
+
+        # 写字
+        start_text = pygame.font.SysFont("SimSun", 30)
+        # start_text = pygame.font.Font("SimSun", 50)
+        start_text_surface = start_text.render('开始游戏', True, (255, 255, 255))
+        self.screen.blit(start_text_surface, (350, 320))
 
     @staticmethod
     def mainloop():
         while True:
-            pygame.display.flip()
+            pygame.display.update()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
