@@ -25,6 +25,7 @@ class Index:
     @staticmethod
     def mainloop():
         while True:
+            pygame.display.flip()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
