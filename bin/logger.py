@@ -34,28 +34,28 @@ class Logger:
         if self.mode == 1 or self.mode == 3:
             print(f'{now_time} [INFO] {msg}')
         if self.mode == 2 or self.mode == 3:
-            logger.__save(f'{now_time} [INFO] {msg}')
+            self.__save(f'{now_time} [INFO] {msg}')
 
     def warning(self, msg):
         now_time = datetime.datetime.now()
         if self.mode == 1 or self.mode == 3:
             print(f'\033[33m{now_time} [WARNING] {msg}\033[0m')
         if self.mode == 2 or self.mode == 3:
-            logger.__save(f'{now_time} [WARNING] {msg}')
+            self.__save(f'{now_time} [WARNING] {msg}')
 
     def error(self, msg):
         now_time = datetime.datetime.now()
         if self.mode == 1 or self.mode == 3:
             print(f'\033[31m{now_time} [ERROR] {msg}\033[0m')
         if self.mode == 2 or self.mode == 3:
-            logger.__save(f'{now_time} [ERROR] {msg}')
+            self.__save(f'{now_time} [ERROR] {msg}')
 
     def critical(self, msg):
         now_time = datetime.datetime.now()
         if self.mode == 1 or self.mode == 3:
             print(f'\033[1;31m{now_time} [CRITICAL] {msg}\033[0m')
         if self.mode == 2 or self.mode == 3:
-            logger.__save(f'{now_time} [CRITICAL] {msg}')
+            self.__save(f'{now_time} [CRITICAL] {msg}')
 
 
 if __name__ == '__main__':
