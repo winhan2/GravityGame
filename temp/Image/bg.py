@@ -5,7 +5,7 @@ from PIL import Image, ImageDraw, ImageFont
 # 用PIL画图
 
 # 创建一个空白图像
-img = Image.new('RGB', (600, 400), 'white')
+img = Image.new('RGB', (800, 600), 'white')
 
 # 创建一个绘图对象
 draw = ImageDraw.Draw(img)
@@ -18,10 +18,10 @@ draw = ImageDraw.Draw(img)
 
 spacing = 40
 # 画一条线
-for i in range(600 // spacing):
-    draw.line([(0, spacing * i), (600, spacing * i)], fill='black')
-for i in range(600 // spacing):
-    draw.line([(spacing * i, 0), (spacing * i, 400)], fill='black')
+for i in range(800 // spacing):
+    draw.line([(0, spacing * i), (800, spacing * i)], fill='black')
+for i in range(800 // spacing):
+    draw.line([(spacing * i, 0), (spacing * i, 600)], fill='black')
 
 # # 添加文字
 # font = ImageFont.truetype('arial.ttf', 36)
