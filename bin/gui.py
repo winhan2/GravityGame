@@ -44,11 +44,22 @@ class Index:
         sgsi = pygame.image.load('../lib/image/settings.png')
         self.screen.blit(sgsi, (0, 0))
 
+    # 事件处理
     @staticmethod
-    def mainloop():
+    def __event_handler(event):
+        # 鼠标点击事件
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            pos = pygame.mouse.get_pos()
+            if 320 < pos[0] < 500 and 300 < pos[1] < 370:
+                return 0
+
+    def mainloop(self):
         while True:
             pygame.display.update()
             for event in pygame.event.get():
+                res = self.__event_handler(event)
+                if res == 0:
+                    print('go')
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     return
