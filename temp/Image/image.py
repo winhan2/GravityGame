@@ -33,13 +33,13 @@ draw = ImageDraw.Draw(img)
 from PIL import Image
 
 # 打开图像文件
-img = Image.open('settings.png')
+img = Image.open('bg.jpg')
 
 # 获取图像的宽度和高度
 width, height = img.size
 
 # 创建一个新的图像，大小为原始图像的1/4
-new_img = img.resize((width // 4, height // 4))
+new_img = img.resize((50, 50))
 
 # 保存新的图像文件
-new_img.save('settings.png')
+new_img.save('icon.jpg')

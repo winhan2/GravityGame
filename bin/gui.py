@@ -4,7 +4,8 @@ import pygame
 import logger
 pygame.init()
 
-class Index:
+# GUI父类
+class GUI:
     def __init__(self, log: logger.Logger):
         self.log = log
         width, height = 800, 600
@@ -12,6 +13,16 @@ class Index:
         self.screen = pygame.display.set_mode((width, height))
         self.screen.fill(background)
         pygame.display.set_caption('GravityGame')
+        pygame.display.set_icon(pygame.image.load('../lib/image/icon.jpg'))
+        self.log.info('GUI init')
+
+# 游戏主界面
+class Game:
+    pass
+
+class Index(GUI):
+    def __init__(self, log):
+        super().__init__(log)
         self.__bg()
         self.__draw()
         self.log.info('Index init')
