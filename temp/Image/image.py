@@ -18,9 +18,9 @@ draw = ImageDraw.Draw(img)
 
 # spacing = 40
 # # 画一条线
-# for i in range(800 // spacing):
-#     draw.line([(0, spacing * i), (800, spacing * i)], fill='black')
-# for i in range(800 // spacing):
+# for i in range(600 // spacing):
+#     draw.line([(0, spacing * i), (600, spacing * i)], fill='black')
+# for i in range(600 // spacing):
 #     draw.line([(spacing * i, 0), (spacing * i, 600)], fill='black')
 #
 # # # 添加文字
@@ -39,7 +39,7 @@ img = Image.open('bg.jpg')
 width, height = img.size
 
 # 创建一个新的图像，大小为原始图像的1/4
-new_img = img.resize((50, 50))
+new_img = img.resize((600, 600))
 
 # 保存新的图像文件
-new_img.save('icon.jpg')
+new_img.save('game_bg.jpg')

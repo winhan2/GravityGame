@@ -19,25 +19,27 @@ class GUI:
         self.log.info('GUI init')
 
     # 事件处理
-    def __event_handler(self, event, min_axis, max_axis, msg=""):
+    def event_handler(self, event, min_axis, max_axis, msg=""):
         if event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
-            if 320 < pos[0] < 500 and 300 < pos[1] < 370:
+            if min_axis[0] < pos[0] < max_axis[0] and min_axis[1] < pos[1] < max_axis[1]:
                 self.log.info(f'MOUSEBUTTONDOWN_EVENT {msg} x: {pos[0]}, y: {pos[1]}')
                 return 0
-            # # 设置
-            # elif 0 < pos[0] < 50 and 0 < pos[1] < 50:
-            #     self.log.info(f'MOUSEBUTTONDOWN_EVENT {msg} x: {pos[0]}, y: {pos[1]}')
-            #     return 1
 
 
 # 游戏主界面
 class Game(GUI):
     def __init__(self, log):
         super().__init__(log)
+        self.__splitline()
+        self.__bg()
 
     def __splitline(self):
-        pygame.draw.line(self.screen, (0, 0, 0), (600, 0), (600, 0), 1)
+        pygame.draw.line(self.screen, (0, 0, 0), (600, 0), (600, 600), 2)
+
+    def __bg(self):
+        gbg = pygame.image.load('../lib/image/game_bg.jpg')
+        self.screen.blit(gbg, (0, 0))
 
     def mainloop(self):
         while True:
@@ -98,10 +100,10 @@ class Index(GUI):
         while True:
             pygame.display.update()
             for event in pygame.event.get():
-                res = self.__event_handler(event, (320, 300), (500, 370), msg='STARTGAME')
-                res2 = self.__event_handler(event, (0, 0), (50, 50), msg='SETTINGS')
+                res = self.event_handler(event, (320, 300), (500, 370), msg='STARTGAME')
+                res2 = self.event_handler(event, (0, 0), (50, 50), msg='SETTINGS')
                 if (res is not None) or (res2 is not None):
-                    return res
+                    return res, res2
 
                 # 退出
                 if event.type == pygame.QUIT:
@@ -113,6 +115,6 @@ class Index(GUI):
 def run(log):
     index = Index(log)
     res = index.mainloop()
-    if res == 0:
+    if res[0] == 0:
         game = Game(log)
         game.mainloop()
