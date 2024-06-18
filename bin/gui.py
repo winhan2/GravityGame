@@ -34,13 +34,14 @@ class Game(GUI):
         self.__splitline()
         self.__bg()
         self.__back()
+        self.__weight()
         self.log.info('game gui init')
-
-    def __splitline(self):
-        pygame.draw.line(self.screen, (0, 0, 0), (600, 0), (600, 600), 2)
 
         # rect = pygame.Rect(605, 100, 80, 80)
         # pygame.draw.rect(self.screen, (0, 0, 0), rect, 2)
+
+    def __splitline(self):
+        pygame.draw.line(self.screen, (0, 0, 0), (600, 0), (600, 600), 2)
 
     def __bg(self):
         gbg = pygame.image.load('../lib/image/game_bg.jpg')
@@ -49,6 +50,13 @@ class Game(GUI):
     def __back(self):
         backi = pygame.image.load('../lib/image/back.png')
         self.screen.blit(backi, (610, 0))
+
+    def __weight(self):
+        weighti = pygame.image.load('../lib/image/red_weight.jpg')
+        self.screen.blit(weighti, (660, 20))
+
+        weighti = pygame.image.load('../lib/image/red_weight_big.jpg')
+        self.screen.blit(weighti, (660, 130))
 
     def mainloop(self):
         while True:
