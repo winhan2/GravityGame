@@ -2,7 +2,9 @@
 
 import pygame
 import logger
+
 pygame.init()
+
 
 # GUI父类
 class GUI:
@@ -16,9 +18,37 @@ class GUI:
         pygame.display.set_icon(pygame.image.load('../lib/image/icon.jpg'))
         self.log.info('GUI init')
 
+    # 事件处理
+    def __event_handler(self, event, min_axis, max_axis, msg=""):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            pos = pygame.mouse.get_pos()
+            if 320 < pos[0] < 500 and 300 < pos[1] < 370:
+                self.log.info(f'MOUSEBUTTONDOWN_EVENT {msg} x: {pos[0]}, y: {pos[1]}')
+                return 0
+            # # 设置
+            # elif 0 < pos[0] < 50 and 0 < pos[1] < 50:
+            #     self.log.info(f'MOUSEBUTTONDOWN_EVENT {msg} x: {pos[0]}, y: {pos[1]}')
+            #     return 1
+
+
 # 游戏主界面
-class Game:
-    pass
+class Game(GUI):
+    def __init__(self, log):
+        super().__init__(log)
+
+    def __splitline(self):
+        pygame.draw.line(self.screen, (0, 0, 0), (600, 0), (600, 0), 1)
+
+    def mainloop(self):
+        while True:
+            pygame.display.update()
+            for event in pygame.event.get():
+                # 退出
+                if event.type == pygame.QUIT:
+                    self.log.info('Index quit')
+                    pygame.quit()
+                    return
+
 
 class Index(GUI):
     def __init__(self, log):
@@ -64,31 +94,25 @@ class Index(GUI):
 
         self.log.info('Index settings image')
 
-    # 事件处理
-    def __event_handler(self, event):
-        # 鼠标点击事件——开始游戏
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            pos = pygame.mouse.get_pos()
-            if 320 < pos[0] < 500 and 300 < pos[1] < 370:
-                self.log.info(f'MOUSEBUTTONDOWN_EVENT STARTGAME x: {pos[0]}, y: {pos[1]}')
-                return 0
-            # 设置
-            elif 0 < pos[0] < 50 and 0 < pos[1] < 50:
-                self.log.info(f'MOUSEBUTTONDOWN_EVENT SETTINGS x: {pos[0]}, y: {pos[1]}')
-                return 1
-
     def mainloop(self):
         while True:
             pygame.display.update()
             for event in pygame.event.get():
-                res = self.__event_handler(event)
-                if res == 0:
-                    print('go')
-                elif res == 1:
-                    print('settings')
+                res = self.__event_handler(event, (320, 300), (500, 370), msg='STARTGAME')
+                res2 = self.__event_handler(event, (0, 0), (50, 50), msg='SETTINGS')
+                if (res is not None) or (res2 is not None):
+                    return res
 
                 # 退出
                 if event.type == pygame.QUIT:
                     self.log.info('Index quit')
                     pygame.quit()
                     return
+
+
+def run(log):
+    index = Index(log)
+    res = index.mainloop()
+    if res == 0:
+        game = Game(log)
+        game.mainloop()

@@ -7,8 +7,7 @@ l = logger.Logger()
 
 def main():
     l.info("starting")
-    ui = gui.Index(l)
-    ui.mainloop()
+    gui.run(l)
     l.info("exiting")
 
 
