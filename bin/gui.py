@@ -24,7 +24,7 @@ class GUI:
             pos = pygame.mouse.get_pos()
             if min_axis[0] < pos[0] < max_axis[0] and min_axis[1] < pos[1] < max_axis[1]:
                 self.log.info(f'MOUSEBUTTONDOWN_EVENT {msg} x: {pos[0]}, y: {pos[1]}')
-                return 0
+                return msg
 
 
 # 游戏主界面
@@ -33,21 +33,36 @@ class Game(GUI):
         super().__init__(log)
         self.__splitline()
         self.__bg()
+        self.__back()
+        self.log.info('game gui init')
 
     def __splitline(self):
         pygame.draw.line(self.screen, (0, 0, 0), (600, 0), (600, 600), 2)
+
+        # rect = pygame.Rect(605, 100, 80, 80)
+        # pygame.draw.rect(self.screen, (0, 0, 0), rect, 2)
 
     def __bg(self):
         gbg = pygame.image.load('../lib/image/game_bg.jpg')
         self.screen.blit(gbg, (0, 0))
 
+    def __back(self):
+        backi = pygame.image.load('../lib/image/back.png')
+        self.screen.blit(backi, (610, 0))
+
     def mainloop(self):
         while True:
             pygame.display.update()
             for event in pygame.event.get():
+                # back
+                res = self.event_handler(event, (610, 0), (660, 50), 'BACKTOINDEX')
+                if res is not None:
+                    if res == 'BACKTOINDEX':
+                        return 2
+
                 # 退出
                 if event.type == pygame.QUIT:
-                    self.log.info('Index quit')
+                    self.log.info('game quit')
                     pygame.quit()
                     return
 
@@ -103,7 +118,10 @@ class Index(GUI):
                 res = self.event_handler(event, (320, 300), (500, 370), msg='STARTGAME')
                 res2 = self.event_handler(event, (0, 0), (50, 50), msg='SETTINGS')
                 if (res is not None) or (res2 is not None):
-                    return res, res2
+                    if res == 'STARTGAME':
+                        return 0
+                    elif res == 'SETTINGS':
+                        return 1
 
                 # 退出
                 if event.type == pygame.QUIT:
@@ -115,6 +133,7 @@ class Index(GUI):
 def run(log):
     index = Index(log)
     res = index.mainloop()
-    if res[0] == 0:
+    if res == 0:
+        log.info('start game')
         game = Game(log)
         game.mainloop()

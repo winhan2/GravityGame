@@ -33,13 +33,13 @@ draw = ImageDraw.Draw(img)
 from PIL import Image
 
 # 打开图像文件
-img = Image.open('bg.jpg')
+img = Image.open('../../lib/image/back.png')
 
 # 获取图像的宽度和高度
 width, height = img.size
 
 # 创建一个新的图像，大小为原始图像的1/4
-new_img = img.resize((600, 600))
+new_img = img.resize((50, 50))
 
 # 保存新的图像文件
-new_img.save('game_bg.jpg')
+new_img.save('back.png')
