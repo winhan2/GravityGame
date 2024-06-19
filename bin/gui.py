@@ -65,7 +65,7 @@ class Game(GUI):
             x = pos[0] // 30 + 1
             y = pos[1] // 40 + 1
 
-            self.log.info(f'MOUSEBUTTONDOWN_WEIGHTEVENT x: {x}, y: {y}')
+            self.log.info(f'MOUSEBUTTONDOWN_WEIGHTEVENT x: {x}, y: {y} MOUSEX: {pos[0]} MOUSEY: {pos[1]}')
 
             return x, y
 
