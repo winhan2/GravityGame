@@ -36,6 +36,7 @@ class Game(GUI):
         self.__back()
         self.__weight()
         self.log.info('game gui init')
+        # pygame.draw.line(self.screen, (0, 0, 0), (0, 100), (30, 100), 2)
 
         # rect = pygame.Rect(605, 100, 80, 80)
         # pygame.draw.rect(self.screen, (0, 0, 0), rect, 2)
@@ -58,10 +59,30 @@ class Game(GUI):
         weighti = pygame.image.load('../lib/image/red_weight_big.jpg')
         self.screen.blit(weighti, (660, 130))
 
+    @staticmethod
+    def __weight_event(event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            pos = pygame.mouse.get_pos()
+            x = pos[0] // 30 + 1
+            y = pos[1] // 40 + 1
+
+            return x, y
+
+    def __weight_display(self, x, y):
+        # weighti = pygame.image.load('../lib/image/red_weight.jpg')
+        # self.screen.blit(weighti, (30 * x, 40 * y))
+        if x != 10 and x != 11:
+            pygame.draw.circle(self.screen, (255, 0, 0), (30 * x - 15, 40 * y - 20), 10, 0)
+
     def mainloop(self):
         while True:
             pygame.display.update()
             for event in pygame.event.get():
+                res = self.__weight_event(event)
+                if res is not None:
+                    x, y = res
+                    self.__weight_display(x, y)
+
                 # back
                 res = self.event_handler(event, (610, 0), (660, 50), 'BACKTOINDEX')
                 if res is not None:
