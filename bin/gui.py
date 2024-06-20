@@ -26,6 +26,7 @@ class GUI:
                 self.log.info(f'MOUSEBUTTONDOWN_EVENT {msg} x: {pos[0]}, y: {pos[1]}')
                 return msg
 
+# 质量(g)
 
 # 游戏主界面
 class Game(GUI):
@@ -34,7 +35,7 @@ class Game(GUI):
         self.__splitline()
         self.__bg()
         self.__back()
-        self.__weight()
+        self.__mass()
         self.log.info('game gui init')
         # pygame.draw.line(self.screen, (0, 0, 0), (0, 100), (30, 100), 2)
 
@@ -52,14 +53,14 @@ class Game(GUI):
         backi = pygame.image.load('../lib/image/back.png')
         self.screen.blit(backi, (610, 0))
 
-    def __weight(self):
-        weighti = pygame.image.load('../lib/image/red_weight.jpg')
+    def __mass(self):
+        weighti = pygame.image.load('../lib/image/red_mass.jpg')
         self.screen.blit(weighti, (660, 20))
 
-        weighti = pygame.image.load('../lib/image/red_weight_big.jpg')
+        weighti = pygame.image.load('../lib/image/red_mass_big.jpg')
         self.screen.blit(weighti, (660, 130))
 
-    def __weight_event(self, event):
+    def __mass_p_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
             x = pos[0] // 30 + 1
@@ -69,8 +70,8 @@ class Game(GUI):
 
             return x, y
 
-    def __weight_display(self, x, y):
-        # weighti = pygame.image.load('../lib/image/red_weight.jpg')
+    def __mass_display(self, x, y):
+        # weighti = pygame.image.load('../lib/image/red_mass.jpg')
         # self.screen.blit(weighti, (30 * x, 40 * y))
         if x != 10 and x != 11 and x <= 20:
             self.log.info(f'DISPLAY_WEIGHTEVENT x: {x}, y: {y}')
@@ -80,10 +81,10 @@ class Game(GUI):
         while True:
             pygame.display.update()
             for event in pygame.event.get():
-                res = self.__weight_event(event)
+                res = self.__mass_p_event(event)
                 if res is not None:
                     x, y = res
-                    self.__weight_display(x, y)
+                    self.__mass_display(x, y)
 
                 # back
                 res = self.event_handler(event, (610, 0), (660, 50), 'BACKTOINDEX')
