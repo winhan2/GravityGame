@@ -32,6 +32,8 @@ class GUI:
 class Game(GUI):
     def __init__(self, log):
         super().__init__(log)
+        self.mass_choose_s = False
+        self.mass_choose_b = False
         self.__splitline()
         self.__bg()
         self.__back()
@@ -66,25 +68,58 @@ class Game(GUI):
             x = pos[0] // 30 + 1
             y = pos[1] // 40 + 1
 
-            self.log.info(f'MOUSEBUTTONDOWN_WEIGHTEVENT x: {x}, y: {y} MOUSEX: {pos[0]} MOUSEY: {pos[1]}')
-
-            return x, y
+            if 12 <= x <= 20:
+                self.log.info(f'MOUSEBUTTONDOWN_MASSEVENT x: {x}, y: {y} MOUSEX: {pos[0]} MOUSEY: {pos[1]}')
+                return x, y
+            else:
+                self.log.info(f'MOUSEBUTTONDOWN_MASSEVENT x: {x}, y: {y} MOUSEX: {pos[0]} MOUSEY: {pos[1]} TOO BIG OR SMALL')
 
     def __mass_display(self, x, y):
         # weighti = pygame.image.load('../lib/image/red_mass.jpg')
         # self.screen.blit(weighti, (30 * x, 40 * y))
-        if x != 10 and x != 11 and x <= 20:
-            self.log.info(f'DISPLAY_WEIGHTEVENT x: {x}, y: {y}')
-            pygame.draw.circle(self.screen, (255, 0, 0), (30 * x - 15, 40 * y - 20), 10, 0)
+        self.log.info(f'DISPLAY_MASSEVENT x: {x}, y: {y}')
+        pygame.draw.circle(self.screen, (255, 0, 0), (30 * x - 15, 40 * y - 20), 10, 0)
+
+    def __mass_choose(self, event_type):
+        if event_type == 'small':
+            if self.mass_choose_s:
+                pygame.draw.circle(self.screen, (255, 255, 255), (700, 60), 48, 5)
+                self.mass_choose_s = False
+                return
+
+            self.mass_choose_s = True
+            pygame.draw.circle(self.screen, (255, 255, 0), (700, 60), 48, 5)
+
+            if self.mass_choose_b:
+                pygame.draw.circle(self.screen, (255, 255, 255), (700, 170), 48, 5)
+                self.mass_choose_b = False
+        elif event_type == 'big':
+            if self.mass_choose_b:
+                pygame.draw.circle(self.screen, (255, 255, 255), (700, 170), 48, 5)
+                self.mass_choose_b = False
+                return
+
+            self.mass_choose_b = True
+            pygame.draw.circle(self.screen, (255, 255, 0), (700, 170), 48, 5)
+
+            if self.mass_choose_s:
+                pygame.draw.circle(self.screen, (255, 255, 255), (700, 60), 48, 5)
+                self.mass_choose_s = False
 
     def mainloop(self):
         while True:
             pygame.display.update()
             for event in pygame.event.get():
                 res = self.__mass_p_event(event)
+                mcr = self.event_handler(event, (660, 20), (740, 100), msg="MASSCHOOSEEVENT")
+                mcrb = self.event_handler(event, (660, 130), (740, 210), msg="MASSCHOOSEBIGEVENT")
                 if res is not None:
                     x, y = res
                     self.__mass_display(x, y)
+                if mcr == 'MASSCHOOSEEVENT':
+                    self.__mass_choose('small')
+                elif mcrb == 'MASSCHOOSEBIGEVENT':
+                    self.__mass_choose('big')
 
                 # back
                 res = self.event_handler(event, (610, 0), (660, 50), 'BACKTOINDEX')
