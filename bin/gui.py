@@ -33,6 +33,7 @@ class Game(GUI):
         super().__init__(log)
         self.mass_choose_s = False
         self.mass_choose_b = False
+        self.cance_choose = False
         self.__splitline()
         self.__bg()
         self.__back()
@@ -71,7 +72,7 @@ class Game(GUI):
     # 取消放置图片
     def __cance(self):
         cance = pygame.image.load('../lib/image/cance.png')
-        self.screen.blit(cance, (730, 80))
+        self.screen.blit(cance, (740, 80))
 
     # 砝码放置事件
     def __mass_p_event(self, event):
@@ -155,8 +156,11 @@ class Game(GUI):
             self.log.info('MASS_CHOOSE_B IS FALSE')
             return
 
-        choose = pygame.Rect(720, 80, 55, 55)
+        # 选择取消按钮
+        choose = pygame.Rect(737, 79, 55, 55)
         pygame.draw.rect(self.screen, (255, 255, 0), choose, 5)
+        self.cance_choose = True
+        self.log.info('CANCE-CHOOSE IS TRUE')
 
     def mainloop(self):
         while True:
@@ -175,7 +179,7 @@ class Game(GUI):
                     self.__mass_choose('big')  # 选择大砝码
                 elif cance == 'CANCE-EVENT':
                     print('c')
-                    self.__cance()  # 选择取消按钮
+                    self.__cance_choose()  # 选择取消按钮
 
                 # back
                 res = self.event_handler(event, (610, 0), (660, 50), 'BACKTOINDEX')
