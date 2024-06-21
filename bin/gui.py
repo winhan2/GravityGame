@@ -34,6 +34,7 @@ class Game(GUI):
         self.mass_choose_s = False
         self.mass_choose_b = False
         self.cance_choose = False
+        self.choose = pygame.Rect(737, 79, 55, 55)
         self.__splitline()
         self.__bg()
         self.__back()
@@ -105,7 +106,7 @@ class Game(GUI):
         # 小砝码
         if event_type == 'small':
             self.log.info('MASS-CHOOSE-SMALL')
-            # 如果小砝码已选择，就不选择小砝码
+            # 如果小砝码已选择，就取消选择小砝码
             if self.mass_choose_s:
                 pygame.draw.circle(self.screen, (255, 255, 255), (700, 60), 48, 5)
                 self.mass_choose_s = False
@@ -117,15 +118,21 @@ class Game(GUI):
             self.log.info('MASS_CHOOSE_S IS TRUE')
             pygame.draw.circle(self.screen, (255, 255, 0), (700, 60), 48, 5)
 
-            # 如果大砝码已选择，就不选择大砝码
+            # 如果大砝码已选择，就取消选择大砝码
             if self.mass_choose_b:
                 pygame.draw.circle(self.screen, (255, 255, 255), (700, 170), 48, 5)
                 self.mass_choose_b = False
                 self.log.info('MASS_CHOOSE_B IS FALSE')
+            # 如果取消按钮已选择，就取消选择取消按钮
+            elif self.cance_choose:
+                pygame.draw.rect(self.screen, (255, 255, 255), self.choose, 5)
+                self.cance_choose = False
+                self.log.info('CANCE-CHOOSE IS FALSE')
+
         # 大砝码
         elif event_type == 'big':
             self.log.info('MASS-CHOOSE-BIG')
-            # 如果大砝码已选择，就不选择大砝码
+            # 如果大砝码已选择，就取消选择大砝码
             if self.mass_choose_b:
                 pygame.draw.circle(self.screen, (255, 255, 255), (700, 170), 48, 5)
                 self.mass_choose_b = False
@@ -137,28 +144,37 @@ class Game(GUI):
             self.log.info('MASS_CHOOSE_B IS TRUE')
             pygame.draw.circle(self.screen, (255, 255, 0), (700, 170), 48, 5)
 
-            # 如果小砝码已选择，就不选择小砝码
+            # 如果小砝码已选择，就取消选择小砝码
             if self.mass_choose_s:
                 pygame.draw.circle(self.screen, (255, 255, 255), (700, 60), 48, 5)
                 self.mass_choose_s = False
                 self.log.info('MASS_CHOOSE_S IS FALSE')
+                # 如果取消按钮已选择，就取消选择取消按钮
+            elif self.cance_choose:
+                pygame.draw.rect(self.screen, (255, 255, 255), self.choose, 5)
+                self.cance_choose = False
+                self.log.info('CANCE-CHOOSE IS FALSE')
 
     # 取消按钮选择
     def __cance_choose(self):
-        if self.mass_choose_s:  # 如果小砝码已选择，就不选择小砝码
+        if self.mass_choose_s:  # 如果小砝码已选择，就取消选择小砝码
             self.mass_choose_s = False
             self.log.info('MASS_CHOOSE_S IS FALSE')
             pygame.draw.circle(self.screen, (255, 255, 255), (700, 60), 48, 5)
             return
-        elif self.mass_choose_b:  # 如果大砝码已选择，就不选择大砝码
+        elif self.mass_choose_b:  # 如果大砝码已选择，就取消选择大砝码
             pygame.draw.circle(self.screen, (255, 255, 255), (700, 170), 48, 5)
             self.mass_choose_b = False
             self.log.info('MASS_CHOOSE_B IS FALSE')
             return
+        elif self.cance_choose:
+            pygame.draw.rect(self.screen, (255, 255, 255), self.choose, 5)
+            self.cance_choose = False
+            self.log.info('CANCE-CHOOSE IS FALSE')
+            return
 
         # 选择取消按钮
-        choose = pygame.Rect(737, 79, 55, 55)
-        pygame.draw.rect(self.screen, (255, 255, 0), choose, 5)
+        pygame.draw.rect(self.screen, (255, 255, 0), self.choose, 5)
         self.cance_choose = True
         self.log.info('CANCE-CHOOSE IS TRUE')
 
@@ -178,7 +194,6 @@ class Game(GUI):
                 elif mcrb == 'MASS-CHOOSE-BIG-EVENT':
                     self.__mass_choose('big')  # 选择大砝码
                 elif cance == 'CANCE-EVENT':
-                    print('c')
                     self.__cance_choose()  # 选择取消按钮
 
                 # back
