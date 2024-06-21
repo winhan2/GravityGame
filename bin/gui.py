@@ -100,6 +100,10 @@ class Game(GUI):
         elif self.mass_choose_b:
             self.log.info(f'DISPLAY_MASSEVENT_BIG x: {x}, y: {y}')
             pygame.draw.circle(self.screen, (255, 0, 0), (30 * x - 15, 40 * y - 20), 10, 0)
+        # 删除砝码
+        elif self.cance_choose:
+            self.log.info(f'DISPLAY_CANCE-EVENT x: {x}, y: {y}')
+            pygame.draw.rect(self.screen, (255, 255, 255), (30 * (x - 1) + 1, 40 * (y - 1) + 1, 27, 37), 0)
 
     # 砝码选择
     def __mass_choose(self, event_type):
