@@ -33,7 +33,7 @@ draw = ImageDraw.Draw(img)
 from PIL import Image
 
 # 打开图像文件
-img = Image.open('../../lib/image/back.png')
+img = Image.open('cance.png')
 
 # 获取图像的宽度和高度
 width, height = img.size
@@ -42,4 +42,4 @@ width, height = img.size
 new_img = img.resize((50, 50))
 
 # 保存新的图像文件
-new_img.save('back.png')
+new_img.save('cance2.png')

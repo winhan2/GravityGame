@@ -37,6 +37,7 @@ class Game(GUI):
         self.__bg()
         self.__back()
         self.__mass()
+        self.__cance()
         self.log.info('game gui init')
         # pygame.draw.line(self.screen, (0, 0, 0), (0, 100), (30, 100), 2)
 
@@ -66,6 +67,11 @@ class Game(GUI):
         # 大砝码
         weighti = pygame.image.load('../lib/image/red_mass_big.jpg')
         self.screen.blit(weighti, (660, 130))
+
+    # 取消放置图片
+    def __cance(self):
+        cance = pygame.image.load('../lib/image/cance.png')
+        self.screen.blit(cance, (730, 80))
 
     # 砝码放置事件
     def __mass_p_event(self, event):
@@ -130,26 +136,46 @@ class Game(GUI):
             self.log.info('MASS_CHOOSE_B IS TRUE')
             pygame.draw.circle(self.screen, (255, 255, 0), (700, 170), 48, 5)
 
-            # # 如果小砝码已选择，就不选择小砝码
+            # 如果小砝码已选择，就不选择小砝码
             if self.mass_choose_s:
                 pygame.draw.circle(self.screen, (255, 255, 255), (700, 60), 48, 5)
                 self.mass_choose_s = False
                 self.log.info('MASS_CHOOSE_S IS FALSE')
+
+    # 取消按钮选择
+    def __cance_choose(self):
+        if self.mass_choose_s:  # 如果小砝码已选择，就不选择小砝码
+            self.mass_choose_s = False
+            self.log.info('MASS_CHOOSE_S IS FALSE')
+            pygame.draw.circle(self.screen, (255, 255, 255), (700, 60), 48, 5)
+            return
+        elif self.mass_choose_b:  # 如果大砝码已选择，就不选择大砝码
+            pygame.draw.circle(self.screen, (255, 255, 255), (700, 170), 48, 5)
+            self.mass_choose_b = False
+            self.log.info('MASS_CHOOSE_B IS FALSE')
+            return
+
+        choose = pygame.Rect(720, 80, 55, 55)
+        pygame.draw.rect(self.screen, (255, 255, 0), choose, 5)
 
     def mainloop(self):
         while True:
             pygame.display.update()  # 刷新
             for event in pygame.event.get():
                 res = self.__mass_p_event(event)
-                mcr = self.event_handler(event, (660, 20), (740, 100), msg="MASSCHOOSEEVENT")  # 检测小砝码是否被选择
-                mcrb = self.event_handler(event, (660, 130), (740, 210), msg="MASSCHOOSEBIGEVENT")  # 检测大砝码是否被选择
+                mcr = self.event_handler(event, (660, 20), (740, 100), msg="MASS-CHOOSE-EVENT")  # 检测小砝码是否被选择
+                mcrb = self.event_handler(event, (660, 130), (740, 210), msg="MASS-CHOOSE-BIG-EVENT")  # 检测大砝码是否被选择
+                cance = self.event_handler(event, (730, 80), (780, 130), msg="CANCE-EVENT")  # 检测取消按钮是否被选择
                 if res is not None:
                     x, y = res
                     self.__mass_display(x, y)
-                if mcr == 'MASSCHOOSEEVENT':
+                if mcr == 'MASS-CHOOSE-EVENT':
                     self.__mass_choose('small')  # 选择小砝码
-                elif mcrb == 'MASSCHOOSEBIGEVENT':
+                elif mcrb == 'MASS-CHOOSE-BIG-EVENT':
                     self.__mass_choose('big')  # 选择大砝码
+                elif cance == 'CANCE-EVENT':
+                    print('c')
+                    self.__cance()  # 选择取消按钮
 
                 # back
                 res = self.event_handler(event, (610, 0), (660, 50), 'BACKTOINDEX')
