@@ -26,7 +26,6 @@ class GUI:
                 self.log.info(f'MOUSEBUTTONDOWN_EVENT {msg} x: {pos[0]}, y: {pos[1]}')
                 return msg
 
-# 质量(g)
 
 # 游戏主界面
 class Game(GUI):
@@ -44,24 +43,31 @@ class Game(GUI):
         # rect = pygame.Rect(605, 100, 80, 80)
         # pygame.draw.rect(self.screen, (0, 0, 0), rect, 2)
 
+    # 画分割线
     def __splitline(self):
         pygame.draw.line(self.screen, (0, 0, 0), (600, 0), (600, 600), 2)
 
+    # 游戏背景图片
     def __bg(self):
         gbg = pygame.image.load('../lib/image/game_bg.jpg')
         self.screen.blit(gbg, (0, 0))
 
+    # 返回图片
     def __back(self):
         backi = pygame.image.load('../lib/image/back.png')
         self.screen.blit(backi, (610, 0))
 
+    # 砝码图片
     def __mass(self):
+        # 小砝码
         weighti = pygame.image.load('../lib/image/red_mass.jpg')
         self.screen.blit(weighti, (660, 20))
 
+        # 大砝码
         weighti = pygame.image.load('../lib/image/red_mass_big.jpg')
         self.screen.blit(weighti, (660, 130))
 
+    # 砝码放置事件
     def __mass_p_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
@@ -74,52 +80,76 @@ class Game(GUI):
             else:
                 self.log.info(f'MOUSEBUTTONDOWN_MASSEVENT x: {x}, y: {y} MOUSEX: {pos[0]} MOUSEY: {pos[1]} TOO BIG OR SMALL')
 
+    # 砝码显示
     def __mass_display(self, x, y):
         # weighti = pygame.image.load('../lib/image/red_mass.jpg')
         # self.screen.blit(weighti, (30 * x, 40 * y))
-        self.log.info(f'DISPLAY_MASSEVENT x: {x}, y: {y}')
-        pygame.draw.circle(self.screen, (255, 0, 0), (30 * x - 15, 40 * y - 20), 10, 0)
+        # 显示小砝码
+        if self.mass_choose_s:
+            self.log.info(f'DISPLAY_MASSEVENT_SMALL x: {x}, y: {y}')
+            pygame.draw.circle(self.screen, (255, 0, 0), (30 * x - 15, 40 * y - 20), 10, 3)
+        # 显示大砝码
+        elif self.mass_choose_b:
+            self.log.info(f'DISPLAY_MASSEVENT_BIG x: {x}, y: {y}')
+            pygame.draw.circle(self.screen, (255, 0, 0), (30 * x - 15, 40 * y - 20), 10, 0)
 
+    # 砝码选择
     def __mass_choose(self, event_type):
+        # 小砝码
         if event_type == 'small':
+            self.log.info('MASS-CHOOSE-SMALL')
+            # 如果小砝码已选择，就不选择小砝码
             if self.mass_choose_s:
                 pygame.draw.circle(self.screen, (255, 255, 255), (700, 60), 48, 5)
                 self.mass_choose_s = False
+                self.log.info('MASS_CHOOSE_S IS FALSE')
                 return
 
+            # 选择小砝码
             self.mass_choose_s = True
+            self.log.info('MASS_CHOOSE_S IS TRUE')
             pygame.draw.circle(self.screen, (255, 255, 0), (700, 60), 48, 5)
 
+            # 如果大砝码已选择，就不选择大砝码
             if self.mass_choose_b:
                 pygame.draw.circle(self.screen, (255, 255, 255), (700, 170), 48, 5)
                 self.mass_choose_b = False
+                self.log.info('MASS_CHOOSE_B IS FALSE')
+        # 大砝码
         elif event_type == 'big':
+            self.log.info('MASS-CHOOSE-BIG')
+            # 如果大砝码已选择，就不选择大砝码
             if self.mass_choose_b:
                 pygame.draw.circle(self.screen, (255, 255, 255), (700, 170), 48, 5)
                 self.mass_choose_b = False
+                self.log.info('MASS_CHOOSE_B IS FALSE')
                 return
 
+            # 选择大砝码
             self.mass_choose_b = True
+            self.log.info('MASS_CHOOSE_B IS TRUE')
             pygame.draw.circle(self.screen, (255, 255, 0), (700, 170), 48, 5)
 
+            # # 如果小砝码已选择，就不选择小砝码
             if self.mass_choose_s:
                 pygame.draw.circle(self.screen, (255, 255, 255), (700, 60), 48, 5)
                 self.mass_choose_s = False
+                self.log.info('MASS_CHOOSE_S IS FALSE')
 
     def mainloop(self):
         while True:
-            pygame.display.update()
+            pygame.display.update()  # 刷新
             for event in pygame.event.get():
                 res = self.__mass_p_event(event)
-                mcr = self.event_handler(event, (660, 20), (740, 100), msg="MASSCHOOSEEVENT")
-                mcrb = self.event_handler(event, (660, 130), (740, 210), msg="MASSCHOOSEBIGEVENT")
+                mcr = self.event_handler(event, (660, 20), (740, 100), msg="MASSCHOOSEEVENT")  # 检测小砝码是否被选择
+                mcrb = self.event_handler(event, (660, 130), (740, 210), msg="MASSCHOOSEBIGEVENT")  # 检测大砝码是否被选择
                 if res is not None:
                     x, y = res
                     self.__mass_display(x, y)
                 if mcr == 'MASSCHOOSEEVENT':
-                    self.__mass_choose('small')
+                    self.__mass_choose('small')  # 选择小砝码
                 elif mcrb == 'MASSCHOOSEBIGEVENT':
-                    self.__mass_choose('big')
+                    self.__mass_choose('big')  # 选择大砝码
 
                 # back
                 res = self.event_handler(event, (610, 0), (660, 50), 'BACKTOINDEX')
