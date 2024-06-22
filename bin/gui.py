@@ -220,10 +220,12 @@ class Game(GUI):
 class Settings:
     def __init__(self, log):
         self.log = log
-        self.lconfig = config.Config('../conf/logger')
+        self.lconfig = config.Config('../conf/logger.cfg')
         self.root = tkinter.Tk()
         self.root.geometry('400x300+500+300')
         self.root.title('Settings')
+
+        self.dlpath: tkinter.StringVar = ...
 
         self.__interface()
 
@@ -235,12 +237,16 @@ class Settings:
         # log path
         tkinter.Label(self.root, text="日志路径").place(x=5, y=40)
 
-        dlpath = tkinter.StringVar(self.root, value=self.lconfig.read('path', 'root_path'))
-        lpath_entry = tkinter.Entry(self.root, width=20, textvariable=dlpath)
+        self.dlpath = tkinter.StringVar(self.root, value=self.lconfig.read('path', 'root_path'))
+        lpath_entry = tkinter.Entry(self.root, width=20, textvariable=self.dlpath)
         lpath_entry.place(x=60, y=40)
 
         # save
-        tkinter.Button(self.root, text='保存').place(x=360, y=265)
+        tkinter.Button(self.root, text='保存', command=self.__sevent).place(x=360, y=265)
+
+    def __sevent(self):
+        dlpath = self.dlpath.get()
+        self.lconfig.set('path', 'root_path', dlpath)
 
     def run(self):
         self.root.mainloop()
