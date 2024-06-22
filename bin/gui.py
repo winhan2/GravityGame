@@ -309,9 +309,15 @@ class Index(GUI):
 
 
 def run(log):
-    index = Index(log)
-    res = index.mainloop()
-    if res == 0:
-        log.info('start game')
-        game = Game(log)
-        game.mainloop()
+    while True:
+        index = Index(log)
+        res = index.mainloop()
+        if res == 0:
+            log.info('start game')
+            game = Game(log)
+            res = game.mainloop()
+        if res == 2:
+            log.info('back yes')
+            continue
+        if res is None:
+            break
