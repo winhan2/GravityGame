@@ -93,19 +93,19 @@ class Game(GUI):
                 self.log.info(f'MOUSEBUTTONDOWN_MASSEVENT x: {x}, y: {y} MOUSEX: {pos[0]} MOUSEY: {pos[1]} TOO BIG OR SMALL')
 
     # 砝码显示
-    def __mass_display(self, x, y):
+    def __mass_display(self, x, y, mtype):
         # weighti = pygame.image.load('../lib/image/red_mass.jpg')
         # self.screen.blit(weighti, (30 * x, 40 * y))
         # 显示小砝码
-        if self.mass_choose_s:
+        if mtype == 's':
             self.log.info(f'DISPLAY_MASSEVENT_SMALL x: {x}, y: {y}')
             pygame.draw.circle(self.screen, (255, 0, 0), (30 * x - 15, 40 * y - 20), 10, 3)
         # 显示大砝码
-        elif self.mass_choose_b:
+        elif mtype == 'b':
             self.log.info(f'DISPLAY_MASSEVENT_BIG x: {x}, y: {y}')
             pygame.draw.circle(self.screen, (255, 0, 0), (30 * x - 15, 40 * y - 20), 10, 0)
         # 删除砝码
-        elif self.cance_choose:
+        elif mtype == 'c':
             self.log.info(f'DISPLAY_CANCE-EVENT x: {x}, y: {y}')
             pygame.draw.rect(self.screen, (255, 255, 255), (30 * (x - 1) + 1, 40 * (y - 1) + 1, 27, 37), 0)
 
@@ -196,7 +196,12 @@ class Game(GUI):
                 cance = self.event_handler(event, (730, 80), (780, 130), msg="CANCE-EVENT")  # 检测取消按钮是否被选择
                 if res is not None:
                     x, y = res
-                    self.__mass_display(x, y)
+                    if self.mass_choose_s:
+                        self.__mass_display(x, y, 's')
+                    elif self.mass_choose_b:
+                        self.__mass_display(x, y, 'b')
+                    elif self.cance_choose:
+                        self.__mass_display(x, y, 'c')
                 if mcr == 'MASS-CHOOSE-EVENT':
                     self.__mass_choose('small')  # 选择小砝码
                 elif mcrb == 'MASS-CHOOSE-BIG-EVENT':
