@@ -1,7 +1,11 @@
 # coding: utf-8
 
 import pygame
+import tkinter.font
 import logger
+import config
+
+from threading import Thread
 
 pygame.init()
 
@@ -213,6 +217,34 @@ class Game(GUI):
                     return
 
 
+class Settings:
+    def __init__(self, log):
+        self.log = log
+        self.lconfig = config.Config('../conf/logger')
+        self.root = tkinter.Tk()
+        self.root.geometry('400x300+500+300')
+        self.root.title('Settings')
+
+        self.__interface()
+
+    def __interface(self):
+        # title
+        title = tkinter.font.Font(self.root, size=15)
+        tkinter.Label(self.root, text="设置", font=title).place(x=5, y=5)
+
+        # log path
+        tkinter.Label(self.root, text="日志路径").place(x=5, y=40)
+
+        dlpath = tkinter.StringVar(self.root, value=self.lconfig.read('path', 'root_path'))
+        lpath_entry = tkinter.Entry(self.root, width=20, textvariable=dlpath)
+        lpath_entry.place(x=60, y=40)
+
+        # save
+        tkinter.Button(self.root, text='保存').place(x=360, y=265)
+
+    def run(self):
+        self.root.mainloop()
+
 class Index(GUI):
     def __init__(self, log):
         super().__init__(log)
@@ -266,8 +298,8 @@ class Index(GUI):
                 if (res is not None) or (res2 is not None):
                     if res == 'STARTGAME':
                         return 0
-                    elif res == 'SETTINGS':
-                        return 1
+                    elif res2 == 'SETTINGS':
+                        Thread(target=Settings(self.log).run(), daemon=True).start()
 
                 # 退出
                 if event.type == pygame.QUIT:
