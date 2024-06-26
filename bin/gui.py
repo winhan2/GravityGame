@@ -2,8 +2,10 @@
 
 import pygame
 import tkinter.font
+
 import logger
 import config
+import gravity
 
 from threading import Thread
 
@@ -17,6 +19,7 @@ class GUI:
         width, height = 800, 600
         background = (255, 255, 255)
         self.screen = pygame.display.set_mode((width, height))
+        self.weights = gravity.WeightGravity()
         self.screen.fill(background)
         pygame.display.set_caption('GravityGame')
         pygame.display.set_icon(pygame.image.load('../lib/image/icon.jpg'))
@@ -88,6 +91,7 @@ class Game(GUI):
 
             if 12 <= x <= 20:
                 self.log.info(f'MOUSEBUTTONDOWN_MASSEVENT x: {x}, y: {y} MOUSEX: {pos[0]} MOUSEY: {pos[1]}')
+                self.weights.add_weight_gravity(gravity.Weight(x, y, 's' if self.mass_choose_s else 'b'))
                 return x, y
             else:
                 self.log.info(f'MOUSEBUTTONDOWN_MASSEVENT x: {x}, y: {y} MOUSEX: {pos[0]} MOUSEY: {pos[1]} TOO BIG OR SMALL')
