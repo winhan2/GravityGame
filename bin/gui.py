@@ -36,6 +36,7 @@ class GUI:
 # 游戏主界面
 class Game(GUI):
     def __init__(self, log):
+        pygame.init()
         super().__init__(log)
         self.mass_choose_s = False
         self.mass_choose_b = False
@@ -99,40 +100,40 @@ class Game(GUI):
             x = pos[0] // 30 + 1
             y = pos[1] // 40 + 1
 
-            if 12 <= x <= 20:
+            if 12 <= x <= 20 and (not (x, y) in self.weights_dic):
                 self.log.info(f'MOUSEBUTTONDOWN_MASSEVENT x: {x}, y: {y} MOUSEX: {pos[0]} MOUSEY: {pos[1]}')
                 return x, y
             else:
                 self.log.info(f'MOUSEBUTTONDOWN_MASSEVENT x: {x}, y: {y} MOUSEX: {pos[0]} MOUSEY: {pos[1]} TOO BIG OR SMALL')
 
     # 砝码显示
-    def __mass_display(self, x, y, mtype):
+    def __mass_display(self, x, y, mtype, red=True):
         # weighti = pygame.image.load('../lib/image/red_mass.jpg')
         # self.screen.blit(weighti, (30 * x, 40 * y))
         # 显示小砝码
         if mtype == 's':
             self.log.info(f'DISPLAY_MASSEVENT_SMALL x: {x}, y: {y}')
-            pygame.draw.circle(self.screen, (255, 0, 0), (30 * x - 15, 40 * y - 20), 10, 3)
+            pygame.draw.circle(self.screen, (255, 0, 0) if red else (0, 0, 255), (30 * x - 15, 40 * y - 20), 10, 3)
             self.weights_dic[(x, y)] = [x, y, 'small']
-            self.red_s_score += gravity.calc(x - 11, 'small')
+            self.red_s_score += gravity.calc(x - 11 if red else self.__bscore(x), 'small')
             self.red_score += self.red_s_score
         # 显示大砝码
         elif mtype == 'b':
             self.log.info(f'DISPLAY_MASSEVENT_BIG x: {x}, y: {y}')
-            pygame.draw.circle(self.screen, (255, 0, 0), (30 * x - 15, 40 * y - 20), 10, 0)
-            self.weights_dic[(x, y)] = [x, y, 'small']
-            self.red_b_score += gravity.calc(x - 11, 'big')
+            pygame.draw.circle(self.screen, (255, 0, 0) if red else (0, 0, 255), (30 * x - 15, 40 * y - 20), 10, 0)
+            self.weights_dic[(x, y)] = [x, y, 'big']
+            self.red_b_score += gravity.calc(x - 11 if red else self.__bscore(x), 'big')
             self.red_score += self.red_b_score
         # 删除砝码
         elif mtype == 'c':
             self.log.info(f'DISPLAY_CANCE-EVENT x: {x}, y: {y}')
             pygame.draw.rect(self.screen, (255, 255, 255), (30 * (x - 1) + 1, 40 * (y - 1) + 1, 27, 37), 0)
             if 'small' in self.weights_dic[(x, y)]:
-                self.red_s_score -= gravity.calc(x - 11, 'small')
-                self.red_score -= gravity.calc(x - 11, 'small')
+                self.red_s_score -= gravity.calc(x - 11 if red else self.__bscore(x), 'small')
+                self.red_score -= gravity.calc(x - 11 if red else self.__bscore(x), 'small')
             else:
-                self.red_b_score -= gravity.calc(x - 11, 'big')
-                self.red_score -= gravity.calc(x - 11, 'big')
+                self.red_b_score -= gravity.calc(x - 11 if red else self.__bscore(x), 'big')
+                self.red_score -= gravity.calc(x - 11 if red else self.__bscore(x), 'big')
         self.__show_score()
 
     # 砝码选择
@@ -212,7 +213,16 @@ class Game(GUI):
         self.cance_choose = True
         self.log.info('CANCE-CHOOSE IS TRUE')
 
+    def blue(self, x, y, mtype):
+        if mtype == 'b':
+            self.__mass_display(x, y, 'b')
+
+    @staticmethod
+    def __bscore(m):
+        return 10 - m
+
     def __show_score(self):
+        pygame.font.init()
         obj_t = pygame.font.SysFont("SimSun", 25)
         score_f = pygame.font.SysFont("SimSun", 15)
 
