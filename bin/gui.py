@@ -101,7 +101,7 @@ class Game(GUI):
             x = pos[0] // 30 + 1
             y = pos[1] // 40 + 1
 
-            if 12 <= x <= 20:
+            if 12 <= x <= 20 and self.is_red:
                 self.log.info(f'MOUSEBUTTONDOWN_MASSEVENT x: {x}, y: {y} MOUSEX: {pos[0]} MOUSEY: {pos[1]}')
                 return x, y
             else:
@@ -148,7 +148,7 @@ class Game(GUI):
                     self.red_b_score -= gravity.calc(x - 11, 'big')
                     self.red_score -= gravity.calc(x - 11, 'big')
                     self.weights_dic.pop((x, y))
-            self.__show_score()
+        self.__show_score()
         self.is_red = False
 
     # 砝码选择
@@ -274,9 +274,15 @@ class Game(GUI):
         self.screen.blit(total_s, (620, 500))
 
     def mainloop(self):
+        blue_weights = {(0, 0): 'b'}
         while True:
             if not self.is_red:
-                self.__mass_display(1, 1, 'b', False)
+                keys = list(blue_weights.keys())
+                if keys[-1][1] <= 15:
+                    self.__mass_display(keys[-1][0], keys[-1][1] + 1, 'b', False)
+                    blue_weights[keys[-1][0], keys[-1][1] + 1] = 'b'
+                    print(blue_weights)
+                self.is_red = True
 
             pygame.display.update()  # 刷新
             for event in pygame.event.get():
