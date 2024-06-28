@@ -124,6 +124,7 @@ class Game(GUI):
                 else:
                     self.blue_s_score += gravity.calc(x - 11 if red else self.__bscore(x), 'small')
                     self.blue_score += self.blue_s_score
+                self.is_red = False
             # 显示大砝码
             elif mtype == 'b':
                 self.log.info(f'DISPLAY_MASSEVENT_BIG x: {x}, y: {y}')
@@ -135,6 +136,7 @@ class Game(GUI):
                 else:
                     self.blue_b_score += gravity.calc(self.__bscore(x), 'big')
                     self.blue_score += gravity.calc(self.__bscore(x), 'big')
+                self.is_red = False
         else:
             # 删除砝码
             if mtype == 'c':
@@ -148,8 +150,8 @@ class Game(GUI):
                     self.red_b_score -= gravity.calc(x - 11, 'big')
                     self.red_score -= gravity.calc(x - 11, 'big')
                     self.weights_dic.pop((x, y))
+                self.is_red = False
         self.__show_score()
-        self.is_red = False
 
     # 砝码选择
     def __mass_choose(self, event_type):
@@ -274,14 +276,16 @@ class Game(GUI):
         self.screen.blit(total_s, (620, 500))
 
     def mainloop(self):
-        blue_weights = {(0, 0): 'b'}
+        blue_weights = {(1, 0): 'b'}
         while True:
             if not self.is_red:
                 keys = list(blue_weights.keys())
-                if keys[-1][1] <= 15:
+                if keys[-1][1] < 15:
                     self.__mass_display(keys[-1][0], keys[-1][1] + 1, 'b', False)
                     blue_weights[keys[-1][0], keys[-1][1] + 1] = 'b'
-                    print(blue_weights)
+                else:
+                    self.__mass_display(keys[-1][0] + 1, 1, 'b', False)
+                    blue_weights[keys[-1][0] + 1, 1] = 'b'
                 self.is_red = True
 
             pygame.display.update()  # 刷新
