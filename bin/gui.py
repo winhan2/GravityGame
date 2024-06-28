@@ -19,7 +19,6 @@ class GUI:
         width, height = 800, 600
         background = (255, 255, 255)
         self.screen = pygame.display.set_mode((width, height))
-        self.weights = gravity.WeightGravity()
         self.screen.fill(background)
         pygame.display.set_caption('GravityGame')
         pygame.display.set_icon(pygame.image.load('../lib/image/icon.jpg'))
@@ -41,12 +40,23 @@ class Game(GUI):
         self.mass_choose_s = False
         self.mass_choose_b = False
         self.cance_choose = False
+
+        self.weights_dic = {}
+
+        self.red_score = 0
+        self.red_s_score = 0
+        self.red_b_score = 0
+        self.blue_score = 0
+        self.blue_s_score = 0
+        self.blue_b_score = 0
+
         self.choose = pygame.Rect(737, 79, 55, 55)
         self.__splitline()
         self.__bg()
         self.__back()
         self.__mass()
         self.__cance()
+        self.__show_score()
         self.log.info('game gui init')
         # pygame.draw.line(self.screen, (0, 0, 0), (0, 100), (30, 100), 2)
 
@@ -91,7 +101,6 @@ class Game(GUI):
 
             if 12 <= x <= 20:
                 self.log.info(f'MOUSEBUTTONDOWN_MASSEVENT x: {x}, y: {y} MOUSEX: {pos[0]} MOUSEY: {pos[1]}')
-                self.weights.add_weight_gravity(gravity.Weight(x, y, 's' if self.mass_choose_s else 'b'))
                 return x, y
             else:
                 self.log.info(f'MOUSEBUTTONDOWN_MASSEVENT x: {x}, y: {y} MOUSEX: {pos[0]} MOUSEY: {pos[1]} TOO BIG OR SMALL')
@@ -104,14 +113,27 @@ class Game(GUI):
         if mtype == 's':
             self.log.info(f'DISPLAY_MASSEVENT_SMALL x: {x}, y: {y}')
             pygame.draw.circle(self.screen, (255, 0, 0), (30 * x - 15, 40 * y - 20), 10, 3)
+            self.weights_dic[(x, y)] = [x, y, 'small']
+            self.red_s_score += gravity.calc(x - 11, 'small')
+            self.red_score += self.red_s_score
         # 显示大砝码
         elif mtype == 'b':
             self.log.info(f'DISPLAY_MASSEVENT_BIG x: {x}, y: {y}')
             pygame.draw.circle(self.screen, (255, 0, 0), (30 * x - 15, 40 * y - 20), 10, 0)
+            self.weights_dic[(x, y)] = [x, y, 'small']
+            self.red_b_score += gravity.calc(x - 11, 'big')
+            self.red_score += self.red_b_score
         # 删除砝码
         elif mtype == 'c':
             self.log.info(f'DISPLAY_CANCE-EVENT x: {x}, y: {y}')
             pygame.draw.rect(self.screen, (255, 255, 255), (30 * (x - 1) + 1, 40 * (y - 1) + 1, 27, 37), 0)
+            if 'small' in self.weights_dic[(x, y)]:
+                self.red_s_score -= gravity.calc(x - 11, 'small')
+                self.red_score -= gravity.calc(x - 11, 'small')
+            else:
+                self.red_b_score -= gravity.calc(x - 11, 'big')
+                self.red_score -= gravity.calc(x - 11, 'big')
+        self.__show_score()
 
     # 砝码选择
     def __mass_choose(self, event_type):
@@ -189,6 +211,42 @@ class Game(GUI):
         pygame.draw.rect(self.screen, (255, 255, 0), self.choose, 5)
         self.cance_choose = True
         self.log.info('CANCE-CHOOSE IS TRUE')
+
+    def __show_score(self):
+        obj_t = pygame.font.SysFont("SimSun", 25)
+        score_f = pygame.font.SysFont("SimSun", 15)
+
+        # 清空画面数据
+        pygame.draw.rect(self.screen, (255, 255, 255), (675, 340, 50, 18))
+        pygame.draw.rect(self.screen, (255, 255, 255), (675, 360, 50, 18))
+        pygame.draw.rect(self.screen, (255, 255, 255), (663, 380, 63, 18))
+
+        pygame.draw.rect(self.screen, (255, 255, 255), (675, 460, 50, 18))
+        pygame.draw.rect(self.screen, (255, 255, 255), (675, 480, 50, 18))
+        pygame.draw.rect(self.screen, (255, 255, 255), (663, 500, 63, 18))
+
+        # 红方（我）
+        red = obj_t.render('红', True, (255, 0, 0))
+        self.screen.blit(red, (620, 300))
+
+        rss = score_f.render(f'小砝码：{self.red_s_score}', True, (0, 0, 0))
+        self.screen.blit(rss, (620, 340))
+        rbs = score_f.render(f'大砝码：{self.red_b_score}', True, (0, 0, 0))
+        self.screen.blit(rbs, (620, 360))
+        total_s = score_f.render(f'总分：{self.red_score}', True, (0, 0, 0))
+        self.screen.blit(total_s, (620, 380))
+
+
+        # 蓝方（计算机）
+        red = obj_t.render('蓝', True, (0, 0, 255))
+        self.screen.blit(red, (620, 420))
+
+        rss = score_f.render(f'小砝码：{self.blue_s_score}', True, (0, 0, 0))
+        self.screen.blit(rss, (620, 460))
+        rbs = score_f.render(f'大砝码：{self.blue_b_score}', True, (0, 0, 0))
+        self.screen.blit(rbs, (620, 480))
+        total_s = score_f.render(f'总分：{self.blue_score}', True, (0, 0, 0))
+        self.screen.blit(total_s, (620, 500))
 
     def mainloop(self):
         while True:
