@@ -110,31 +110,44 @@ class Game(GUI):
     def __mass_display(self, x, y, mtype, red=True):
         # weighti = pygame.image.load('../lib/image/red_mass.jpg')
         # self.screen.blit(weighti, (30 * x, 40 * y))
-        # 显示小砝码
-        if mtype == 's':
-            self.log.info(f'DISPLAY_MASSEVENT_SMALL x: {x}, y: {y}')
-            pygame.draw.circle(self.screen, (255, 0, 0) if red else (0, 0, 255), (30 * x - 15, 40 * y - 20), 10, 3)
-            self.weights_dic[(x, y)] = [x, y, 'small']
-            self.red_s_score += gravity.calc(x - 11 if red else self.__bscore(x), 'small')
-            self.red_score += self.red_s_score
-        # 显示大砝码
-        elif mtype == 'b':
-            self.log.info(f'DISPLAY_MASSEVENT_BIG x: {x}, y: {y}')
-            pygame.draw.circle(self.screen, (255, 0, 0) if red else (0, 0, 255), (30 * x - 15, 40 * y - 20), 10, 0)
-            self.weights_dic[(x, y)] = [x, y, 'big']
-            self.red_b_score += gravity.calc(x - 11 if red else self.__bscore(x), 'big')
-            self.red_score += self.red_b_score
-        # 删除砝码
-        elif mtype == 'c':
-            self.log.info(f'DISPLAY_CANCE-EVENT x: {x}, y: {y}')
-            pygame.draw.rect(self.screen, (255, 255, 255), (30 * (x - 1) + 1, 40 * (y - 1) + 1, 27, 37), 0)
-            if 'small' in self.weights_dic[(x, y)]:
-                self.red_s_score -= gravity.calc(x - 11 if red else self.__bscore(x), 'small')
-                self.red_score -= gravity.calc(x - 11 if red else self.__bscore(x), 'small')
-            else:
-                self.red_b_score -= gravity.calc(x - 11 if red else self.__bscore(x), 'big')
-                self.red_score -= gravity.calc(x - 11 if red else self.__bscore(x), 'big')
-        self.__show_score()
+
+        if not (x, y) in self.weights_dic:
+            # 显示小砝码
+            if mtype == 's':
+                self.log.info(f'DISPLAY_MASSEVENT_SMALL x: {x}, y: {y}')
+                pygame.draw.circle(self.screen, (255, 0, 0) if red else (0, 0, 255), (30 * x - 15, 40 * y - 20), 10, 3)
+                self.weights_dic[(x, y)] = [x, y, 'small']
+                if red:
+                    self.red_s_score += gravity.calc(x - 11 if red else self.__bscore(x), 'small')
+                    self.red_score += self.red_s_score
+                else:
+                    self.blue_s_score += gravity.calc(x - 11 if red else self.__bscore(x), 'small')
+                    self.blue_score += self.blue_s_score
+            # 显示大砝码
+            elif mtype == 'b':
+                self.log.info(f'DISPLAY_MASSEVENT_BIG x: {x}, y: {y}')
+                pygame.draw.circle(self.screen, (255, 0, 0) if red else (0, 0, 255), (30 * x - 15, 40 * y - 20), 10, 0)
+                self.weights_dic[(x, y)] = [x, y, 'big']
+                if red:
+                    self.red_b_score += gravity.calc(x - 11 if red else self.__bscore(x), 'big')
+                    self.red_score += self.red_b_score
+                else:
+                    self.blue_b_score += gravity.calc(x - 11 if red else self.__bscore(x), 'big')
+                    self.blue_score += self.blue_b_score
+        else:
+            print(x, y)
+            # 删除砝码
+            if mtype == 'c':
+                print('a')
+                self.log.info(f'DISPLAY_CANCE-EVENT x: {x}, y: {y}')
+                pygame.draw.rect(self.screen, (255, 255, 0), (30 * (x - 1) + 1, 40 * (y - 1) + 1, 27, 37), 0)
+                if 'small' in self.weights_dic[(x, y)]:
+                    self.red_s_score -= gravity.calc(x - 11 if red else self.__bscore(x), 'small')
+                    self.red_score -= gravity.calc(x - 11 if red else self.__bscore(x), 'small')
+                else:
+                    self.red_b_score -= gravity.calc(x - 11 if red else self.__bscore(x), 'big')
+                    self.red_score -= gravity.calc(x - 11 if red else self.__bscore(x), 'big')
+            self.__show_score()
 
     # 砝码选择
     def __mass_choose(self, event_type):
@@ -260,6 +273,8 @@ class Game(GUI):
 
     def mainloop(self):
         while True:
+            self.__mass_display(1, 1, 'b', False)
+
             pygame.display.update()  # 刷新
             for event in pygame.event.get():
                 res = self.__mass_p_event(event)
