@@ -43,6 +43,7 @@ class Game(GUI):
         self.cance_choose = False
 
         self.weights_dic = {}
+        self.is_red = True
 
         self.red_score = 0
         self.red_s_score = 0
@@ -148,6 +149,7 @@ class Game(GUI):
                     self.red_score -= gravity.calc(x - 11, 'big')
                     self.weights_dic.pop((x, y))
             self.__show_score()
+        self.is_red = False
 
     # 砝码选择
     def __mass_choose(self, event_type):
@@ -273,7 +275,8 @@ class Game(GUI):
 
     def mainloop(self):
         while True:
-            self.__mass_display(1, 1, 'b', False)
+            if not self.is_red:
+                self.__mass_display(1, 1, 'b', False)
 
             pygame.display.update()  # 刷新
             for event in pygame.event.get():
@@ -342,6 +345,7 @@ class Settings:
 
     def run(self):
         self.root.mainloop()
+
 
 class Index(GUI):
     def __init__(self, log):
