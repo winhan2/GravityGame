@@ -100,7 +100,7 @@ class Game(GUI):
             x = pos[0] // 30 + 1
             y = pos[1] // 40 + 1
 
-            if 12 <= x <= 20 and (not (x, y) in self.weights_dic):
+            if 12 <= x <= 20:
                 self.log.info(f'MOUSEBUTTONDOWN_MASSEVENT x: {x}, y: {y} MOUSEX: {pos[0]} MOUSEY: {pos[1]}')
                 return x, y
             else:
@@ -129,24 +129,24 @@ class Game(GUI):
                 pygame.draw.circle(self.screen, (255, 0, 0) if red else (0, 0, 255), (30 * x - 15, 40 * y - 20), 10, 0)
                 self.weights_dic[(x, y)] = [x, y, 'big']
                 if red:
-                    self.red_b_score += gravity.calc(x - 11 if red else self.__bscore(x), 'big')
-                    self.red_score += self.red_b_score
+                    self.red_b_score += gravity.calc(x - 11, 'big')
+                    self.red_score += gravity.calc(x - 11, 'big')
                 else:
-                    self.blue_b_score += gravity.calc(x - 11 if red else self.__bscore(x), 'big')
-                    self.blue_score += self.blue_b_score
+                    self.blue_b_score += gravity.calc(self.__bscore(x), 'big')
+                    self.blue_score += gravity.calc(self.__bscore(x), 'big')
         else:
-            print(x, y)
             # 删除砝码
             if mtype == 'c':
-                print('a')
                 self.log.info(f'DISPLAY_CANCE-EVENT x: {x}, y: {y}')
-                pygame.draw.rect(self.screen, (255, 255, 0), (30 * (x - 1) + 1, 40 * (y - 1) + 1, 27, 37), 0)
+                pygame.draw.rect(self.screen, (255, 255, 255), (30 * (x - 1) + 1, 40 * (y - 1) + 1, 27, 37), 0)
                 if 'small' in self.weights_dic[(x, y)]:
-                    self.red_s_score -= gravity.calc(x - 11 if red else self.__bscore(x), 'small')
-                    self.red_score -= gravity.calc(x - 11 if red else self.__bscore(x), 'small')
+                    self.red_s_score -= gravity.calc(x - 11, 'small')
+                    self.red_score -= gravity.calc(x - 11, 'small')
+                    self.weights_dic.pop((x, y))
                 else:
-                    self.red_b_score -= gravity.calc(x - 11 if red else self.__bscore(x), 'big')
-                    self.red_score -= gravity.calc(x - 11 if red else self.__bscore(x), 'big')
+                    self.red_b_score -= gravity.calc(x - 11, 'big')
+                    self.red_score -= gravity.calc(x - 11, 'big')
+                    self.weights_dic.pop((x, y))
             self.__show_score()
 
     # 砝码选择
