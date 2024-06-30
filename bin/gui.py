@@ -45,6 +45,13 @@ class Game(GUI):
         self.weights_dic = {}
         self.is_red = True
 
+        self.bmax = int(config.Config('../conf/mass.cfg').read('big_mass', 'max'))
+        self.smax = int(config.Config('../conf/mass.cfg').read('small_mass', 'max'))
+        self.red_s = 0
+        self.blue_s = 0
+        self.red_b = 0
+        self.blue_b = 0
+
         self.red_score = 0
         self.red_s_score = 0
         self.red_b_score = 0
@@ -115,31 +122,51 @@ class Game(GUI):
         if not (x, y) in self.weights_dic:
             # 显示小砝码
             if mtype == 's':
-                self.log.info(f'DISPLAY_MASSEVENT_SMALL x: {x}, y: {y}')
-                pygame.draw.circle(self.screen, (255, 0, 0) if red else (0, 0, 255), (30 * x - 15, 40 * y - 20), 10, 3)
-                self.weights_dic[(x, y)] = [x, y, 'small']
-                if red:
-                    self.red_s_score += gravity.calc(x - 11 if red else self.__bscore(x), 'small')
-                    self.red_score += self.red_s_score
-                else:
-                    self.blue_s_score += gravity.calc(x - 11 if red else self.__bscore(x), 'small')
-                    self.blue_score += self.blue_s_score
-                self.is_red = False
+                if self.red_s < self.smax or self.blue_s < self.smax:
+                    if red:
+                        self.red_s += 1
+                    else:
+                        self.blue_s += 1
+                    self.log.info(f'DISPLAY_MASSEVENT_SMALL x: {x}, y: {y}')
+                    pygame.draw.circle(self.screen, (255, 0, 0) if red else (0, 0, 255), (30 * x - 15, 40 * y - 20), 10, 3)
+                    self.weights_dic[(x, y)] = [x, y, 'small']
+                    if red:
+                        self.red_s_score += gravity.calc(x - 11 if red else self.__bscore(x), 'small')
+                        self.red_score += self.red_s_score
+                    else:
+                        self.blue_s_score += gravity.calc(x - 11 if red else self.__bscore(x), 'small')
+                        self.blue_score += self.blue_s_score
+                    self.is_red = False
             # 显示大砝码
             elif mtype == 'b':
-                self.log.info(f'DISPLAY_MASSEVENT_BIG x: {x}, y: {y}')
-                pygame.draw.circle(self.screen, (255, 0, 0) if red else (0, 0, 255), (30 * x - 15, 40 * y - 20), 10, 0)
-                self.weights_dic[(x, y)] = [x, y, 'big']
-                if red:
-                    self.red_b_score += gravity.calc(x - 11, 'big')
-                    self.red_score += gravity.calc(x - 11, 'big')
-                else:
-                    self.blue_b_score += gravity.calc(self.__bscore(x), 'big')
-                    self.blue_score += gravity.calc(self.__bscore(x), 'big')
-                self.is_red = False
+                if self.red_b < self.bmax or self.blue_b < self.bmax:
+                    if red:
+                        self.red_b += 1
+                    else:
+                        self.blue_b += 1
+                    self.log.info(f'DISPLAY_MASSEVENT_BIG x: {x}, y: {y}')
+                    pygame.draw.circle(self.screen, (255, 0, 0) if red else (0, 0, 255), (30 * x - 15, 40 * y - 20), 10, 0)
+                    self.weights_dic[(x, y)] = [x, y, 'big']
+                    if red:
+                        self.red_b_score += gravity.calc(x - 11, 'big')
+                        self.red_score += gravity.calc(x - 11, 'big')
+                    else:
+                        self.blue_b_score += gravity.calc(self.__bscore(x), 'big')
+                        self.blue_score += gravity.calc(self.__bscore(x), 'big')
+                    self.is_red = False
         else:
             # 删除砝码
             if mtype == 'c':
+                if red:
+                    if 'small' in self.weights_dic[(x, y)]:
+                        self.red_s -= 1
+                    else:
+                        self.red_b -= 1
+                else:
+                    if 'small' in self.weights_dic[(x, y)]:
+                        self.blue_s -= 1
+                    else:
+                        self.blue_b -= 1
                 self.log.info(f'DISPLAY_CANCE-EVENT x: {x}, y: {y}')
                 pygame.draw.rect(self.screen, (255, 255, 255), (30 * (x - 1) + 1, 40 * (y - 1) + 1, 27, 37), 0)
                 if 'small' in self.weights_dic[(x, y)]:
@@ -230,10 +257,6 @@ class Game(GUI):
         self.cance_choose = True
         self.log.info('CANCE-CHOOSE IS TRUE')
 
-    def blue(self, x, y, mtype):
-        if mtype == 'b':
-            self.__mass_display(x, y, 'b')
-
     @staticmethod
     def __bscore(m):
         return 10 - m
@@ -279,13 +302,14 @@ class Game(GUI):
         blue_weights = {(1, 0): 'b'}
         while True:
             if not self.is_red:
+                mtype = 'b' if self.blue_b < self.bmax else 's'
                 keys = list(blue_weights.keys())
                 if keys[-1][1] < 15:
-                    self.__mass_display(keys[-1][0], keys[-1][1] + 1, 'b', False)
-                    blue_weights[keys[-1][0], keys[-1][1] + 1] = 'b'
+                    self.__mass_display(keys[-1][0], keys[-1][1] + 1, mtype, False)
+                    blue_weights[keys[-1][0], keys[-1][1] + 1] = mtype
                 else:
-                    self.__mass_display(keys[-1][0] + 1, 1, 'b', False)
-                    blue_weights[keys[-1][0] + 1, 1] = 'b'
+                    self.__mass_display(keys[-1][0] + 1, 1, mtype, False)
+                    blue_weights[keys[-1][0] + 1, 1] = mtype
                 self.is_red = True
 
             pygame.display.update()  # 刷新
