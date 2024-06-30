@@ -298,6 +298,25 @@ class Game(GUI):
         total_s = score_f.render(f'总分：{self.blue_score}', True, (0, 0, 0))
         self.screen.blit(total_s, (620, 500))
 
+    def show_result(self, msg):
+        self.screen.fill((255, 255, 255))
+
+        pygame.draw.rect(self.screen, (0, 0, 255), (330, 300, 150, 50), 0)
+        self.screen.blit(pygame.font.SysFont("SimSun", 30).render('返回', True, (0, 0, 0)), (375, 310))
+
+        res_font = pygame.font.SysFont("SimSun", 70)
+        if msg == 'red':
+            red = res_font.render('红方胜利！', True, (255, 0, 0))
+            self.screen.blit(red, (250, 200))
+        elif msg == 'blue':
+            blue = res_font.render('蓝方胜利！', True, (0, 0, 255))
+            self.screen.blit(blue, (250, 200))
+        elif msg == 'is':
+            is_res = res_font.render('双方平等！', True, (255, 255, 0))
+            self.screen.blit(is_res, (250, 200))
+
+        return 0
+
     def mainloop(self):
         blue_weights = {(1, 0): 'b'}
         while True:
@@ -311,6 +330,16 @@ class Game(GUI):
                     self.__mass_display(keys[-1][0] + 1, 1, mtype, False)
                     blue_weights[keys[-1][0] + 1, 1] = mtype
                 self.is_red = True
+
+            res_sr = -1
+            if self.red_s == self.smax and self.red_b == self.bmax and \
+                self.blue_s == self.smax and self.red_s == self.smax:
+                if self.red_score > self.blue_score:
+                    res_sr = self.show_result('red')
+                elif self.red_score < self.blue_score:
+                    res_sr = self.show_result('blue')
+                elif self.red_score == self.blue_score:
+                    res_sr = self.show_result('is')
 
             pygame.display.update()  # 刷新
             for event in pygame.event.get():
@@ -326,6 +355,11 @@ class Game(GUI):
                         self.__mass_display(x, y, 'b')
                     elif self.cance_choose:
                         self.__mass_display(x, y, 'c')
+                if res_sr == 0:
+                    res = self.event_handler(event, (330, 300), (480, 350), msg="BACK-EVENT")
+                    if res == 'BACK-EVENT':
+                        return 2
+
                 if mcr == 'MASS-CHOOSE-EVENT':
                     self.__mass_choose('small')  # 选择小砝码
                 elif mcrb == 'MASS-CHOOSE-BIG-EVENT':
